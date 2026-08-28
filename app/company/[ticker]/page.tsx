@@ -2,6 +2,16 @@ import Link from "next/link";
 import { getFinancialDataProvider } from "@/services";
 import { CompanyDashboard } from "@/components/company/company-dashboard";
 
+// This page must always render fresh: it depends on live financial data
+// and a live AI analysis. Without this, Next.js may treat it as a static
+// route (no dynamic APIs are used) and cache the whole rendered page for
+// up to 24h at the CDN edge — including a transient failure (e.g. an
+// OpenAI quota error that has since been fixed). The individual fetch
+// calls inside FMPFinancialDataProvider / generateAIAnalystOutput still
+// use their own `next.revalidate` caching for cost control — this only
+// disables the outer full-page cache.
+export const dynamic = "force-dynamic";
+
 export default async function CompanyPage({
   params,
 }: {
@@ -20,7 +30,7 @@ export default async function CompanyPage({
         <p className="max-w-sm text-sm leading-relaxed text-ink-muted">
           This ticker isn&apos;t available yet — either it&apos;s not a
           recognized symbol, or it&apos;s on a non-US exchange, which our
-          current (free-tr) data plan doesn&apos;t cover. US-listed
+          current (free-tier) data plan doesn&apos;t cover. US-listed
           companies like AAPL, MSFT, or TSLA work today; Ferrari (RACE) is
           the fully built demo either way.
         </p>
@@ -37,5 +47,5 @@ export default async function CompanyPage({
     );
   }
 
- return <CompanyDashboard bundle={bundle} />;
+  return <CompanyDashboard bundle={bundle} />;
 }
