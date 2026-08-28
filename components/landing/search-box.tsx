@@ -5,35 +5,37 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// These are just quick-start suggestions now — every ticker is attempted
+// against the live provider (FMP) when configured, or falls back to the
+// Ferrari demo bundle / a "Coming soon" page otherwise. See
+// app/company/[ticker]/page.tsx for that fallback logic.
+//
+// FMP's free tier only covers US-exchange-listed companies, so the
+// suggestions below are deliberately all US names — European/foreign
+// tickers (Spotify, LVMH, Ryanair, Moncler...) return a 402 on free plan
+// and would always dead-end into "Coming soon". Revisit this list if the
+// FMP plan is upgraded (see roadmap notes on data provider tiers).
 const SUGGESTIONS = [
-  { label: "Ferrari", ticker: "RACE", live: true },
-  { label: "Spotify", ticker: "SPOT", live: false },
-  { label: "LVMH", ticker: "MC.PA", live: false },
-  { label: "Ryanair", ticker: "RYAAY", live: false },
-  { label: "Moncler", ticker: "MONC.MI", live: false },
+  { label: "Ferrari", ticker: "RACE" },
+  { label: "Apple", ticker: "AAPL" },
+  { label: "Microsoft", ticker: "MSFT" },
+  { label: "Tesla", ticker:"TSLA" },
+  { label: "Nike", ticker: "NKE" },
 ];
 
 export function SearchBox() {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [notice, setNotice] = useState<string | null>(null);
 
-  function go(ticker: string, live: boolean) {
-    if (!live) {
-      setNotice(
-        `${ticker} isn't wired to live data yet in this MVP — try Ferrari (RACE), the fully built demo.`
-      );
-      return;
-    }
-    setNotice(null);
-    router.push(`/company/${ticker}`);
+  function go(ticker: string) {
+    router.push(`/company/${ticker.toUpperCase()}`);
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = query.trim().toUpperCase();
     if (!trimmed) return;
-    go(trimmed === "RACE" || trimmed === "FERRARI" ? "RACE" : trimmed, trimmed === "RACE" || trimmed === "FERRARI");
+    go(trimmed === "FERRARI" ? "RACE" : trimmed);
   }
 
   return (
@@ -65,22 +67,16 @@ export function SearchBox() {
         {SUGGESTIONS.map((s) => (
           <button
             key={s.ticker}
-            onClick={() => go(s.ticker, s.live)}
+            onClick={() => go(s.ticker)}
             className={cn(
               "rounded-full border px-2.5 py-1 text-xs transition-colors",
-              s.live
-                ? "border-deal/30 bg-deal-soft text-deal-strong hover:bg-deal-soft/70"
-                : "border-line text-ink-muted hover:border-line-strong"
+              "border-deal/30 bg-deal-soft text-deal-strong hover:bg-deal-soft/70"
             )}
           >
             {s.label}
           </button>
         ))}
       </div>
-
-      {notice && (
-        <p className="mt-3 text-xs text-ink-muted">{notice}</p>
-      )}
     </div>
   );
 }

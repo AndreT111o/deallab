@@ -18,9 +18,11 @@ export default async function CompanyPage({
         </p>
         <h1 className="font-display text-2xl font-medium">Coming soon</h1>
         <p className="max-w-sm text-sm leading-relaxed text-ink-muted">
-          This ticker isn&apos;t wired to a data source yet in the MVP.
-          Ferrari (RACE) is the fully built demo — every module, real
-          calculations, no fabricated numbers.
+          This ticker isn&apos;t available yet — either it&apos;s not a
+          recognized symbol, or it&apos;s on a non-US exchange, which our
+          current (free-tr) data plan doesn&apos;t cover. US-listed
+          companies like AAPL, MSFT, or TSLA work today; Ferrari (RACE) is
+          the fully built demo either way.
         </p>
         <Link
           href="/company/RACE"
@@ -35,5 +37,5 @@ export default async function CompanyPage({
     );
   }
 
-  return <CompanyDashboard bundle={bundle} />;
+ return <CompanyDashboard bundle={bundle} />;
 }
