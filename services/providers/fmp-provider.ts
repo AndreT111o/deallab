@@ -1,7 +1,7 @@
 
 import type { FinancialDataProvider } from "../financial-data-provider";
 import type {
-  AIAnalystOutput,
+
   BalanceSheet,
   Company,
   CompanyBundle,
@@ -11,6 +11,7 @@ import type {
   ValuationMetrics,
 } from "@/types";
 import { computeMAScore } from "@/lib/calculations/ma-score";
+import { generateAIAnalystOutput } from "@/services/ai-analyst";
 
 /**
  * FMPFinancialDataProvider
@@ -203,24 +204,7 @@ function buildValuation(
     });
 }
 
-/** Placeholder AI Analyst output — see file header for why this isn't faked. */
-function placeholderAnalystOutput(companyName: string): AIAnalystOutput {
-  const note =
-    `Live AI-generated analysis for ${companyName} is not yet connected. ` +
-    "This section requires an OPENAI_API_KEY integration (roadmap Fase 2) " +
-    "and intentionally does not display fabricated investment commentary " +
-    "until that's wired up.";
-  return {
-    summary: note,
-    investment_highlights: [note],
-    risks: [{ label: "AI Analyst not yet connected", level: "Medium", note }],
-    ma_rationale: [note],
-    buyer_types: [],
-    bull_case: note,
-    bear_case: note,
-    conclusion: note,
-  };
-}
+
 
 async function fetchPeer(ticker: string): Promise<PeerCompany | null> {
   try {
@@ -369,6 +353,15 @@ export class FMPFinancialDataProvider implements FinancialDataProvider {
         consolidationPotential: 50,
       });
 
+      const analystAnalysis = await generateAIAnalystOutput(
+        company,
+        financials,
+        balanceSheet,
+        valuation,
+        peers,
+        maScore
+      );
+      
       return {
         company,
         financials,
@@ -376,7 +369,7 @@ export class FMPFinancialDataProvider implements FinancialDataProvider {
         valuation,
         peers,
         dcfDefaults,
-        analystAnalysis: placeholderAnalystOutput(company.name),
+        analystAnalysis,
         maScore,
       };
     } catch (err) {
