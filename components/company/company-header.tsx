@@ -3,6 +3,7 @@ import type { Company } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrencyM, formatPrice } from "@/lib/calculations/formatters";
 import { AuthStatus } from "@/components/auth/account-menu";
+import { WatchlistButton } from "@/components/watchlist/watchlist-button";
 
 export function CompanyHeader({ company }: { company: Company }) {
   return (
@@ -32,6 +33,7 @@ export function CompanyHeader({ company }: { company: Company }) {
               <span className="font-mono text-sm text-ink-faint">
                 {company.ticker}
               </span>
+              <WatchlistButton ticker={company.ticker} companyName={company.name} />
             </div>
             <p className="mt-1 text-sm text-ink-muted">
               {company.industry} · {company.country}

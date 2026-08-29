@@ -3,6 +3,7 @@ import { LineChart, Calculator, ShieldCheck, FileText } from "lucide-react";
 import { SearchBox } from "@/components/landing/search-box";
 import { TickerStrip } from "@/components/landing/ticker-strip";
 import { AuthStatus } from "@/components/auth/account-menu";
+import { createClient } from "@/lib/supabase/server";
 
 const STEPS = [
   {
@@ -30,6 +31,42 @@ const STEPS = [
     body: "Generate an investment-grade analysis and memo in minutes.",
   },
 ];
+
+async function WatchlistSection() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: items } = await supabase
+    .from("watchlist")
+    .select("ticker, company_name")
+    .eq("user_id", user.id)
+    .order("added_at", { ascending: false });
+
+  if (!items || items.length === 0) return null;
+
+  return (
+    <div className="mt-8">
+      <p className="mb-3 text-2xs uppercase tracking-[0.08em] text-ink-faint">
+        Your Watchlist
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {items.map((item) => (
+          <Link
+            key={item.ticker}
+            href={`/company/${item.ticker}`}
+            className="rounded-full border border-line-strong bg-surface px-3 py-1.5 text-sm text-ink transition-colors hover:border-deal hover:text-deal-strong"
+          >
+            {item.company_name}{" "}
+            <span className="font-mono text-2xs text-ink-faint">{item.ticker}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default async function LandingPage() {
   return (
@@ -68,6 +105,8 @@ export default async function LandingPage() {
         <div className="mt-9">
           <SearchBox />
         </div>
+
+        <WatchlistSection />
       </section>
 
       <section className="border-t border-line bg-surface">
