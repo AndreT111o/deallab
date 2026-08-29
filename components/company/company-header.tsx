@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Company } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrencyM, formatPrice } from "@/lib/calculations/formatters";
+import { AuthStatus } from "@/components/auth/account-menu";
 
 export function CompanyHeader({ company }: { company: Company }) {
   return (
@@ -14,9 +15,12 @@ export function CompanyHeader({ company }: { company: Company }) {
           >
             DealLab
           </Link>
-          {company.source === "DEMO DATA" && (
-            <Badge tone="amber">Demo Data</Badge>
-          )}
+          <div className="flex items-center gap-4">
+            {company.source === "DEMO DATA" && (
+              <Badge tone="amber">Demo Data</Badge>
+            )}
+            <AuthStatus />
+          </div>
         </div>
 
         <div className="flex flex-wrap items-end justify-between gap-4">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getFinancialDataProvider } from "@/services";
 import { CompanyDashboard } from "@/components/company/company-dashboard";
+import { CompanyHeader } from "@/components/company/company-header";
 
 // This page must always render fresh: it depends on live financial data
 // and a live AI analysis. Without this, Next.js may treat it as a static
@@ -47,5 +48,10 @@ export default async function CompanyPage({
     );
   }
 
-  return <CompanyDashboard bundle={bundle} />;
+  return (
+    <>
+      <CompanyHeader company={bundle.company} />
+      <CompanyDashboard bundle={bundle} />
+    </>
+  );
 }

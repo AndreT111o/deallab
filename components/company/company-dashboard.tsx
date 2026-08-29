@@ -1,7 +1,6 @@
 "use client";
 
 import type { CompanyBundle } from "@/types";
-import { CompanyHeader } from "./company-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OverviewTab } from "@/features/company-overview/overview-tab";
 import { FinancialsTab } from "@/features/financials/financials-tab";
@@ -12,8 +11,6 @@ import { MemoTab } from "@/features/memo/memo-tab";
 export function CompanyDashboard({ bundle }: { bundle: CompanyBundle }) {
   return (
     <main className="min-h-screen bg-paper pb-24">
-      <CompanyHeader company={bundle.company} />
-
       <div className="mx-auto max-w-6xl px-6">
         <Tabs defaultValue="overview" className="pt-2">
           <TabsList>

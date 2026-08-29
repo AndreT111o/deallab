@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LineChart, Calculator, ShieldCheck, FileText } from "lucide-react";
 import { SearchBox } from "@/components/landing/search-box";
 import { TickerStrip } from "@/components/landing/ticker-strip";
+import { AuthStatus } from "@/components/auth/account-menu";
 
 const STEPS = [
   {
@@ -30,7 +31,7 @@ const STEPS = [
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
   return (
     <main className="min-h-screen bg-paper">
       <TickerStrip />
@@ -46,6 +47,7 @@ export default function LandingPage() {
           <span className="hidden text-2xs text-ink-faint sm:inline">
             Analytical & educational platform
           </span>
+          <AuthStatus />
         </nav>
       </header>
 
